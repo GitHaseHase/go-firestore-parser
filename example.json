@@ -1,0 +1,64 @@
+{
+  "name": "projects/project-id/databases/(default)/documents/develop/documentID",
+  "fields": {
+    "bool": {
+      "booleanValue": true
+    },
+    "int": {
+      "integerValue": "1"
+    },
+    "double": {
+      "doubleValue": 0.1
+    },
+    "string": {
+      "stringValue": "value"
+    },
+    "null": {
+      "nullValue": null
+    },
+    "array": {
+      "arrayValue": {
+        "values": [
+          {
+            "stringValue": "value"
+          }
+        ]
+      }
+    },
+    "zero_array": {
+      "arrayValue": {
+      }
+    },
+    "map": {
+      "mapValue": {
+        "fields": {
+          "field": {
+            "stringValue": "value"
+          }
+        }
+      }
+    },
+    "zero_map": {
+      "mapValue": {
+      }
+    },
+    "geopoint": {
+      "geoPointValue": {
+        "latitude": 37,
+        "longitude": 135
+      }
+    },
+    "zero_geopoint": {
+      "geoPointValue": {
+      }
+    },
+    "reference": {
+      "referenceValue": "projects/project-id/databases/(default)/documents/collectionID/documentID"
+    },
+    "timestamp": {
+      "timestampValue": "2019-11-13T15:00:00Z"
+    }
+  },
+  "createTime": "2019-11-14T06:40:30.217331Z",
+  "updateTime": "2019-11-14T08:15:17.878823Z"
+}

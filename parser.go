@@ -8,6 +8,18 @@ import (
 	"strconv"
 )
 
+// func main() {
+// 	test()
+// }
+
+// func test() {
+// 	b, _ := ioutil.ReadFile("./example.json")
+// 	jsonstr := string(b)
+// 	fmt.Println(jsonstr)
+// 	marshal := ParseJSON(jsonstr)
+// 	fmt.Println(ParseFirestoreValue(marshal))
+// }
+
 // ParseJSON is parser for json strings
 func ParseJSON(jsonString string) interface{} {
 	var data interface{}
@@ -28,25 +40,19 @@ func ParseFirestoreValue(value interface{}) interface{} {
 		propName = *prop
 		propValue = value.(map[string]interface{})[propName]
 	}
-	if propName == "nullValue" {
-		return nil
-	} else if propName == "integerValue" {
+	if propName == "integerValue" {
 		i, _ := strconv.Atoi(propValue.(string))
 		return i
 	} else if propName == "geoPointValue" {
-		geoPointValue := propValue
 		geoPoint := map[string]float64{"latitude": 0, "longitude": 0}
-		for _, v := range reflect.ValueOf(geoPointValue.(map[string]interface{})).MapKeys() {
+		for _, v := range reflect.ValueOf(propValue).MapKeys() {
 			key := v.String()
-			geoPoint[key] = geoPointValue.(map[string]interface{})[key].(float64)
+			geoPoint[key] = propValue.(map[string]interface{})[key].(float64)
 		}
 		return geoPoint
 	} else if propName == "arrayValue" {
 		array := propValue.(map[string]interface{})["values"]
 		ary := []interface{}{}
-		if array == nil {
-			return nil
-		}
 		if reflect.ValueOf(array).Kind() == reflect.Slice {
 			for _, val := range array.([]interface{}) {
 				ary = append(ary, ParseFirestoreValue(val))
@@ -54,13 +60,9 @@ func ParseFirestoreValue(value interface{}) interface{} {
 		}
 		return ary
 	} else if propName == "mapValue" {
-		mapValue := propValue
-		obj := mapValue.(map[string]interface{})["fields"]
+		obj := propValue.(map[string]interface{})["fields"]
 		m := map[string]interface{}{}
-		if obj == nil {
-			return nil
-		}
-		if reflect.ValueOf(obj).Kind() != reflect.Map {
+		if reflect.ValueOf(obj).Kind() == reflect.Map {
 			for key, value := range obj.(map[string]interface{}) {
 				m[key] = ParseFirestoreValue(value)
 			}
