@@ -96,6 +96,7 @@ func GetFirestoreProp(value interface{}) (prop *string) {
 		"doubleValue",
 		"integerValue",
 		"geoPointValue",
+		"timestampValue",
 		"referenceValue",
 		"nullValue",
 	}
