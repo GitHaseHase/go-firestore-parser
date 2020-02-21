@@ -1,33 +1,9 @@
 package parser
 
 import (
-	"bytes"
-	"encoding/json"
-	"log"
 	"reflect"
 	"strconv"
 )
-
-// func main() {
-// 	test()
-// }
-
-// func test() {
-// 	b, _ := ioutil.ReadFile("./example.json")
-// 	jsonstr := string(b)
-// 	fmt.Println(jsonstr)
-// 	marshal := ParseJSON(jsonstr)
-// 	fmt.Println(ParseFirestoreValue(marshal))
-// }
-
-// ParseJSON is parser for json strings
-func ParseJSON(jsonString string) interface{} {
-	var data interface{}
-	if err := json.NewDecoder(bytes.NewBufferString(jsonString)).Decode(&data); err != nil {
-		log.Fatalln(err.Error())
-	}
-	return data
-}
 
 // ParseFirestoreValue is parser for the Firestore REST API JSON
 func ParseFirestoreValue(value interface{}) interface{} {
@@ -90,6 +66,7 @@ func ParseFirestoreValue(value interface{}) interface{} {
 
 // GetFirestoreProp is getting the Firestore REST API JSON property names
 func GetFirestoreProp(value interface{}) (prop *string) {
+	var val map[string]interface{}
 	fieldNames := []string{
 		"booleanValue",
 		"stringValue",
@@ -102,14 +79,17 @@ func GetFirestoreProp(value interface{}) (prop *string) {
 		"referenceValue",
 		"nullValue",
 	}
+	if reflect.ValueOf(value).Kind() == reflect.Ptr {
+		value = reflect.Indirect(reflect.ValueOf(value)).Interface()
+	}
 	if reflect.ValueOf(value).Kind() == reflect.Map {
-	LOOP:
-		for key := range value.(map[string]interface{}) {
-			for _, field := range fieldNames {
-				if field == key {
-					prop = &field
-					break LOOP
-				}
+		val = value.(map[string]interface{})
+	}
+	for key := range val {
+		for _, field := range fieldNames {
+			if field == key {
+				_field := field
+				return &_field
 			}
 		}
 	}
