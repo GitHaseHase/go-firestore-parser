@@ -59,6 +59,8 @@ func ParseFirestoreValue(value interface{}) interface{} {
 			ary = append(ary, value)
 		}
 		return ary
+	} else if reflect.ValueOf(value).Kind() == reflect.Ptr {
+		return ParseFirestoreValue(reflect.Indirect(reflect.ValueOf(value)).Interface())
 	}
 	// right back if non Firestore REST API JSON
 	return value
@@ -78,9 +80,6 @@ func GetFirestoreProp(value interface{}) (prop *string) {
 		"timestampValue",
 		"referenceValue",
 		"nullValue",
-	}
-	if reflect.ValueOf(value).Kind() == reflect.Ptr {
-		value = reflect.Indirect(reflect.ValueOf(value)).Interface()
 	}
 	if reflect.ValueOf(value).Kind() == reflect.Map {
 		val = value.(map[string]interface{})
